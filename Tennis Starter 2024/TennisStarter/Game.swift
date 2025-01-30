@@ -90,9 +90,12 @@ class Game {
     }
     
     func winner() -> String {
-        return match.winner()
+        if let winner = match.winner() {
+            return winner
+        }
+        return "No winner yet"
     }
-    
+
 
     /**
      If player 1 would win the game if they won the next point, returns the number of points player 2 would need to win to equalise the score, otherwise returns 0
