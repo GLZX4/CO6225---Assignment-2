@@ -22,7 +22,8 @@ class ViewController: UIViewController {
 
     private var game = Game() // Instantiate the Game logic
     var audioPlayer: AVAudioPlayer?
-
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         updateUI()
@@ -31,23 +32,34 @@ class ViewController: UIViewController {
     /********Methods*********/
     @IBAction func p1AddPointPressed(_ sender: UIButton) {
         game.addPointToPlayer1()
-        if game.complete() {
+        if game.complete() { // Now reflects match completion
             showWinnerAlert()
+            playSound(named: "Sound")
         }
         updateUI()
     }
 
     @IBAction func p2AddPointPressed(_ sender: UIButton) {
         game.addPointToPlayer2()
-        if game.complete() {
+        if game.complete() { // Now reflects match completion
             showWinnerAlert()
+            playSound(named: "Sound")
         }
         updateUI()
     }
 
     @IBAction func restartPressed(_ sender: AnyObject) {
-        game = Game() // Reset the game logic
-        updateUI()
+        let alert = UIAlertController (
+            title: "Restart Match",
+            message: "Are you sure you want to restart the match",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "cancel", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "Restart", style: .destructive) { _ in
+            self.game = Game()
+            self.updateUI()
+        })
+        self.present(alert, animated: true, completion: nil)
     }
 
     private func updateUI() {
@@ -66,14 +78,19 @@ class ViewController: UIViewController {
         // Update previous sets (optional)
         // Add functionality to track and display previous sets if required
 
-        // Enable or disable buttons if the match is complete
         p1Button.isEnabled = !game.complete()
         p2Button.isEnabled = !game.complete()
+        
+        updateMatchPointColour()
     }
 
     private func showWinnerAlert() {
-        let winner = game.winner() ?? "Unknown"
-        let alert = UIAlertController(title: "Match Over", message: "\(winner) wins the match!", preferredStyle: .alert)
+        let winner = game.winner() ?? "No Winner Yet"
+        print("Winner alert triggered for: \(winner ?? "None")")
+        let alert = UIAlertController(
+            title: "Match Over",
+            message: "\(winner) wins the match!",
+            preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
@@ -90,5 +107,23 @@ class ViewController: UIViewController {
             print("Sound file '\(soundName).wav' not found in bundle.")
         }
     }
+    
+    private func updateMatchPointColour() {
+        if game.gamePointsForPlayer1() > 0 {
+            p1PointsLabel.backgroundColor = UIColor.green
+        } else {
+            p1PointsLabel.backgroundColor = UIColor.clear
+        }
+        if game.gamePointsForPlayer2() > 0 {
+            p2PointsLabel.backgroundColor = UIColor.green
+        } else {
+            p2PointsLabel.backgroundColor = UIColor.clear
+        }
+    }
+    
+    private func updateServingColours(isPlayerServing: Bool) {
+        p1NameLabel.backgroundColor = isPlayerServing ? UIColor.purple : UIColor.clear
+        p2NameLabel.backgroundColor = isPlayerServing ? UIColor.clear : UIColor.purple
 
+    }
 }

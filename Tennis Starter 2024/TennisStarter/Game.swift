@@ -12,7 +12,7 @@ class Game {
         if !complete() {
             player1 += 1
             if player1Won() {
-                match.addGameToPlayer1()
+                match.addGamePlayer1()
                 resetGame()
             }
         }
@@ -25,7 +25,7 @@ class Game {
         if !complete() {
             player2 += 1
             if player2Won() {
-                match.addGameToPlayer2()
+                match.addGamePlayer2()
                 resetGame()
             }
         }
@@ -50,11 +50,11 @@ class Game {
     }
     
     func currentSetGamesForPlayer1() -> Int {
-        return match.currentSetGamesForPlayer1()
+        return match.returnCurrentGamesPlayer1()
     }
 
     func currentSetGamesForPlayer2() -> Int {
-        return match.currentSetGamesForPlayer2()
+        return match.returnCurrentGamesPlayer2()
     }
 
     func player1Sets() -> Int {
@@ -85,15 +85,12 @@ class Game {
      Returns true if the game is finished, false otherwise
      */
     func complete() ->Bool {
-        return player1Won() || player2Won()
+        return match.complete()
         
     }
     
     func winner() -> String {
-        if let winner = match.winner() {
-            return winner
-        }
-        return "No winner yet"
+        return match.winner() ?? "No Winner Yet"
     }
 
 

@@ -5,36 +5,35 @@
 //  Created by GEORGE HARRISON on 30/01/2025.
 //  Copyright © 2025 University of Chester. All rights reserved.
 //
-
 class Match {
     private var player1SetsWon: Int = 0
     private var player2SetsWon: Int = 0
     private var currentSet: Set = Set()
 
-    func addGameToPlayer1() {
-        currentSet.addGamePlayer1()
+    func addGamePlayer1() {
+        currentSet.addGameToPlayer1()
         if currentSet.complete() {
-            if currentSet.returnCurrentGamesPlayer1() > currentSet.returnCurrentGamesPlayer2() {
+            if currentSet.player1Games() > currentSet.player2Games() {
                 player1SetsWon += 1
             } else {
                 player2SetsWon += 1
             }
             if !complete() {
-                currentSet = Set()
+                currentSet = Set() // Start a new set
             }
         }
     }
 
-    func addGameToPlayer2() {
-        currentSet.addGamePlayer2()
+    func addGamePlayer2() {
+        currentSet.addGameToPlayer2()
         if currentSet.complete() {
-            if currentSet.returnCurrentGamesPlayer1() > currentSet.returnCurrentGamesPlayer2() {
+            if currentSet.player1Games() > currentSet.player2Games() {
                 player1SetsWon += 1
             } else {
                 player2SetsWon += 1
             }
             if !complete() {
-                currentSet = Set()
+                currentSet = Set() // Start a new set
             }
         }
     }
@@ -47,22 +46,24 @@ class Match {
         return player2SetsWon
     }
 
-    func currentSetGamesForPlayer1() -> Int {
-        return currentSet.returnCurrentGamesPlayer1()
+    func returnCurrentGamesPlayer1() -> Int {
+        return currentSet.player1Games()
     }
 
-    func currentSetGamesForPlayer2() -> Int {
-        return currentSet.returnCurrentGamesPlayer2()
+    func returnCurrentGamesPlayer2() -> Int {
+        return currentSet.player2Games()
+    }
+
+    func winner() -> String? {
+        if player1SetsWon >= 3 {
+            return "Player 1"
+        } else if player2SetsWon >= 3 {
+            return "Player 2"
+        }
+        return nil
     }
 
     func complete() -> Bool {
         return player1SetsWon == 3 || player2SetsWon == 3
-    }
-
-    func winner() -> String? {
-        if complete() {
-            return player1SetsWon > player2SetsWon ? "Player 1" : "Player 2"
-        }
-        return nil
     }
 }
