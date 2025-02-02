@@ -111,6 +111,18 @@ class Game {
         
     }
     
+    func gameState() -> [String: Any] {
+        return [
+            "player1": player1,
+            "player2": player2,
+            "player1GamesWon": match.returnCurrentGamesPlayer1(),
+            "player2GamesWon": match.returnCurrentGamesPlayer2(),
+            "player1Sets": match.player1Sets(),
+            "player2Sets": match.player2Sets(),
+            "tiebreackActive": match.returnCurrentTieBreakStatus()
+        ]
+    }
+    
     
     //Helper Functions below, Must remain private
     private func hasWon(playerPoints: Int, opponentPoints: Int) -> Bool {
@@ -137,6 +149,36 @@ class Game {
         return 0
     }
     
+    func loadGameState(_ state: [String: Any]) {
+        // Define keys and their default values
+        let keysWithDefaults: [String: Any] = [
+            "player1": 0,
+            "player2": 0,
+            "player1GamesWon": 0,
+            "player2GamesWon": 0,
+            "player1SetsWon": 0,
+            "player2SetsWon": 0,
+            "tieBreakActive": false
+        ]
+        
+        keysWithDefaults.forEach { key, defaultValue in
+            let value = state[key] ?? defaultValue
+            switch key {
+            case "player1":
+                player1 = value as? Int ?? 0
+            case "player2":
+                player2 = value as? Int ?? 0
+            case "player1GamesWon":
+                let player1Games = value as? Int ?? 0
+                let player2Games = state["player2GamesWon"] as? Int ?? 0
+                let tieBreak = state["tieBreakActive"] as? Bool ?? false
+                match.loadState(player1Games: player1Games, player2Games: player2Games, player1Sets: player1, player2Sets: player2, tieBreakActive: tieBreak)
+            default:
+                break
+            }
+        }
+    }
+
     private func resetGame() {
         player1 = 0
         player2 = 0

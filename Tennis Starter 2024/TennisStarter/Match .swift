@@ -53,7 +53,10 @@ class Match {
     func returnCurrentGamesPlayer2() -> Int {
         return currentSet.player2Games()
     }
-
+    
+    func returnCurrentTieBreakStatus() -> Bool {
+        return Set.isTieBreakActive(currentSet)()
+    }
     func winner() -> String? {
         if player1SetsWon >= 3 {
             return "Player 1"
@@ -65,5 +68,12 @@ class Match {
 
     func complete() -> Bool {
         return player1SetsWon == 3 || player2SetsWon == 3
+    }
+    
+    func loadState(player1Games: Int, player2Games: Int, player1Sets: Int, player2Sets: Int, tieBreakActive: Bool) {
+        player1SetsWon = player1Sets
+        player2SetsWon = player2Sets
+        currentSet = Set()
+        currentSet.loadState(player1Games: player1Games, player2Games: player2Games, tieBreakActive: tieBreakActive)
     }
 }

@@ -72,5 +72,16 @@ class Set {
         return (player1TieBreakPoints >= 7 || player2TieBreakPoints >= 7) &&
                abs(player1TieBreakPoints - player2TieBreakPoints) >= 2
     }
+    
+    func loadState(player1Games: Int, player2Games: Int, tieBreakActive: Bool) {
+        self.player1GamesWon = player1Games
+        self.player2GamesWon = player2Games
+        self.tieBreakActive = tieBreakActive
+
+        if !tieBreakActive {
+            player1TieBreakPoints = 0
+            player2TieBreakPoints = 0
+        }
+    }
 }
 

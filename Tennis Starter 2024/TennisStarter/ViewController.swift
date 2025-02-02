@@ -31,8 +31,9 @@ class ViewController: UIViewController {
 
     /********Methods*********/
     @IBAction func p1AddPointPressed(_ sender: UIButton) {
+        animateButton(sender)
         game.addPointToPlayer1()
-        if game.complete() { // Now reflects match completion
+        if game.complete() {
             showWinnerAlert()
             playSound(named: "Sound")
         }
@@ -40,8 +41,9 @@ class ViewController: UIViewController {
     }
 
     @IBAction func p2AddPointPressed(_ sender: UIButton) {
+        animateButton(sender)
         game.addPointToPlayer2()
-        if game.complete() { // Now reflects match completion
+        if game.complete() {
             showWinnerAlert()
             playSound(named: "Sound")
         }
@@ -61,6 +63,18 @@ class ViewController: UIViewController {
         })
         self.present(alert, animated: true, completion: nil)
     }
+    
+    @IBAction func loadPressed(_ sender: UIButton) {
+        animateButton(sender)
+        loadGame()
+        updateUI()
+    }
+    
+    @IBAction func savePressed(_ sender: UIButton) {
+        animateButton(sender)
+        saveGame()
+        updateUI()
+    }
 
     private func updateUI() {
         // Update points
@@ -74,9 +88,6 @@ class ViewController: UIViewController {
         // Update sets
         p1SetsLabel.text = "\(game.player1Sets())"
         p2SetsLabel.text = "\(game.player2Sets())"
-
-        // Update previous sets (optional)
-        // Add functionality to track and display previous sets if required
 
         p1Button.isEnabled = !game.complete()
         p2Button.isEnabled = !game.complete()
@@ -121,9 +132,35 @@ class ViewController: UIViewController {
         }
     }
     
+    private func saveGame() {
+        let gameState = game.gameState()
+        UserDefaults.standard.set(gameState, forKey: "savedGame")
+        print("Game Saved Sucessfully")
+    }
+    
+    private func loadGame() {
+        if let savedState = UserDefaults.standard.dictionary(forKey: "savedGameState") {
+            game.loadGameState(savedState)
+            print("Game state loaded!")
+            updateUI()
+        }
+    }
+
+    
     private func updateServingColours(isPlayerServing: Bool) {
         p1NameLabel.backgroundColor = isPlayerServing ? UIColor.purple : UIColor.clear
         p2NameLabel.backgroundColor = isPlayerServing ? UIColor.clear : UIColor.purple
-
+    }
+    
+    private func animateButton(_ button: UIButton) {
+        // Shrink the button slightly
+        UIView.animate(withDuration: 0.1, animations: {
+            button.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+        }) { _ in
+            // Return to original size with a bounce effect
+            UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 3, options: .allowUserInteraction, animations: {
+                button.transform = CGAffineTransform.identity
+            }, completion: nil)
+        }
     }
 }
